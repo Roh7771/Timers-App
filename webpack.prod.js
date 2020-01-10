@@ -25,18 +25,7 @@ module.exports = {
       },
       {
         test: /\.(sass|scss|css)$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              hmr: process.env.NODE_ENV === 'development',
-              publicPath: './dist/styles',
-              reloadAll: true,
-            },
-          },
-          'css-loader',
-          'sass-loader',
-        ],
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
       {
         test: /\.(png|jpg|gif|webp)$/,
@@ -48,6 +37,18 @@ module.exports = {
             },
           },
           'image-webpack-loader',
+        ],
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/,
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 8192,
+            },
+          },
+          'file-loader',
         ],
       },
       {

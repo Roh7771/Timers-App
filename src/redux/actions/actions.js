@@ -3,6 +3,7 @@ import {
   INPUTCHANGE,
   CLEARINPUTS,
   UPDATECURRENTDATE,
+  DELETETIMER,
 } from './actionsTypes';
 
 export function createTimer(data) {
@@ -28,5 +29,12 @@ export function clearInput() {
 export function updateCurrentDate() {
   return {
     type: UPDATECURRENTDATE,
+  };
+}
+
+export function deleteTimer(id) {
+  return {
+    type: DELETETIMER,
+    payload: id,
   };
 }

@@ -4,6 +4,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import rootReducer from './redux/reducers/rootReducer';
 import App from './App';
+import 'bootstrap/scss/bootstrap.scss';
 
 const loggerMiddleware = store => next => action => {
   const result = next(action);

@@ -1,40 +1,15 @@
-import React, { useEffect } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 import './style/main.sass';
-import PropTypes from 'prop-types';
 import Inputs from './components/Inputs';
 import Timers from './components/Timers';
-import { updateCurrentDate } from './redux/actions/actions';
+import Title from './components/Title';
 
-function App({ updateDate }) {
-  useEffect(() => {
-    setInterval(() => {
-      updateDate();
-    }, 1000);
-  }, []);
+export default function App() {
   return (
-    <>
+    <div className="container">
+      <Title />
       <Inputs />
       <Timers />
-    </>
+    </div>
   );
 }
-
-App.propTypes = {
-  updateDate: PropTypes.func.isRequired,
-};
-
-// function mapStateToProps(state) {
-//   return {
-//     currentRecipe: state.recipesReducer.currentRecipe,
-//     cardsPresent: state.recipesReducer.cardsPresent,
-//   };
-// }
-
-function mapDispatchToProps(dispatch) {
-  return {
-    updateDate: () => dispatch(updateCurrentDate()),
-  };
-}
-
-export default connect(null, mapDispatchToProps)(App);

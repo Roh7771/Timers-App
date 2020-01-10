@@ -1,19 +1,52 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { deleteTimer } from '../redux/actions/actions';
 
-function Timers({ timers, currentDate }) {
+function formatDate(time) {
+  return time < 10 ? `0${time}` : time;
+}
+
+function Timers({ timers, currentDate, onDelete }) {
   return (
-    <div>
+    <div className="timers">
       {timers.map(el => {
         let timesLeft = el.endDate - currentDate;
-        const daysLeft = Math.floor(timesLeft / (1000 * 60 * 60 * 24));
-        const hoursLeft = Math.floor(timesLeft / (1000 * 60 * 60));
-        const minutesLeft = Math.floor(timesLeft / (1000 * 60));
+        if (timesLeft > 0) {
+          const daysLeft = formatDate(
+            Math.floor(timesLeft / (1000 * 60 * 60 * 24)),
+          );
+          timesLeft -= daysLeft * (1000 * 60 * 60 * 24);
+          const hoursLeft = formatDate(
+            Math.floor(timesLeft / (1000 * 60 * 60)),
+          );
+          timesLeft -= hoursLeft * (1000 * 60 * 60);
+          const minutesLeft = formatDate(Math.floor(timesLeft / (1000 * 60)));
+          timesLeft -= minutesLeft * (1000 * 60);
+          const secondsLeft = formatDate(Math.floor(timesLeft / 1000));
+          return (
+            <div key={el.id} className="timers__item">
+              <div className="timers__timerName">{el.name}</div>
+              <div className="timers__countdown">
+                <div className="timers__countdownDigits">{`${daysLeft}:${hoursLeft}:${minutesLeft}:${secondsLeft}`}</div>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => onDelete(el.id)}
+                  type="button"
+                >
+                  Удалить
+                </button>
+              </div>
+            </div>
+          );
+        }
         return (
           <div key={el.id}>
             <div>{el.name}</div>
-            <div>{`Осталось ${el.endDate - currentDate}`}</div>
+            <div>Done</div>
+            <button onClick={() => onDelete(el.id)} type="button">
+              Удалить
+            </button>
           </div>
         );
       })}
@@ -24,6 +57,7 @@ function Timers({ timers, currentDate }) {
 Timers.propTypes = {
   timers: PropTypes.arrayOf(PropTypes.object).isRequired,
   currentDate: PropTypes.number.isRequired,
+  onDelete: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
@@ -33,14 +67,10 @@ function mapStateToProps(state) {
   };
 }
 
-// function mapDispatchToProps(dispatch) {
-//   return {
-//     onChange: data => dispatch(inputChange(data)),
-//     onStart: data => {
-//       dispatch(createTimer(data));
-//       dispatch(clearInput());
-//     },
-//   };
-// }
+function mapDispatchToProps(dispatch) {
+  return {
+    onDelete: id => dispatch(deleteTimer(id)),
+  };
+}
 
-export default connect(mapStateToProps, null)(Timers);
+export default connect(mapStateToProps, mapDispatchToProps)(Timers);

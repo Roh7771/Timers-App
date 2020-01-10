@@ -3,8 +3,7 @@ import { INPUTCHANGE, CLEARINPUTS } from '../actions/actionsTypes';
 const initialState = {
   nameInputValue: '',
   dateInputValue: '',
-  hoursInputValue: '',
-  minutesInputValue: '',
+  timeInputValue: '',
 };
 
 export default function(state = initialState, action) {
@@ -20,8 +19,7 @@ export default function(state = initialState, action) {
         ...state,
         nameInputValue: '',
         dateInputValue: '',
-        hoursInputValue: '',
-        minutesInputValue: '',
+        timeInputValue: '',
       };
 
     default:

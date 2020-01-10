@@ -1,28 +1,51 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { inputChange, createTimer, clearInput } from '../redux/actions/actions';
+import {
+  inputChange,
+  createTimer,
+  clearInput,
+  updateCurrentDate,
+} from '../redux/actions/actions';
 
 function Inputs({
   nameInputValue,
   dateInputValue,
-  hoursInputValue,
-  minutesInputValue,
+  timeInputValue,
   onChange,
   onStart,
+  updateDate,
 }) {
-  const createDate = (date, hours, minutes) => {
+  useEffect(() => {
+    setInterval(() => {
+      updateDate();
+    }, 1000);
+  }, []);
+  const createDate = (date, time) => {
     const endDate = new Date(date);
-    endDate.setHours(+hours);
-    endDate.setMinutes(+minutes);
+    const timeArr = time.split(':');
+    endDate.setHours(+timeArr[0]);
+    endDate.setMinutes(+timeArr[1]);
     return endDate;
   };
 
   return (
-    <div>
+    <form
+      className="inputs"
+      onSubmit={e => {
+        e.preventDefault();
+        onStart({
+          name: nameInputValue,
+          endDate: createDate(dateInputValue, timeInputValue),
+        });
+      }}
+    >
       <input
+        className="inputs__name form-control"
+        placeholder="Enter a countdown timer's name..."
         type="text"
         name="name"
+        required
         onChange={e => {
           onChange({
             inputName: e.target.getAttribute('name'),
@@ -31,73 +54,55 @@ function Inputs({
         }}
         value={nameInputValue}
       />
-      <input
-        type="date"
-        name="date"
-        onChange={e => {
-          onChange({
-            inputName: e.target.getAttribute('name'),
-            value: e.target.value,
-          });
-        }}
-        value={dateInputValue}
-      />
-      <input
-        type="number"
-        name="hours"
-        onChange={e => {
-          onChange({
-            inputName: e.target.getAttribute('name'),
-            value: e.target.value,
-          });
-        }}
-        value={hoursInputValue}
-      />
-      <input
-        type="number"
-        name="minutes"
-        onChange={e => {
-          onChange({
-            inputName: e.target.getAttribute('name'),
-            value: e.target.value,
-          });
-        }}
-        value={minutesInputValue}
-      />
-      <button
-        type="button"
-        onClick={() => {
-          onStart({
-            name: nameInputValue,
-            endDate: createDate(
-              dateInputValue,
-              hoursInputValue,
-              minutesInputValue,
-            ),
-          });
-        }}
-      >
+      <div className="inputs__dateGroup">
+        <input
+          className="inputs__date"
+          type="date"
+          name="date"
+          required
+          onChange={e => {
+            onChange({
+              inputName: e.target.getAttribute('name'),
+              value: e.target.value,
+            });
+          }}
+          value={dateInputValue}
+        />
+        <input
+          className="inputs__time"
+          type="time"
+          name="time"
+          required
+          onChange={e => {
+            onChange({
+              inputName: e.target.getAttribute('name'),
+              value: e.target.value,
+            });
+          }}
+          value={timeInputValue}
+        />
+      </div>
+      <button className="btn btn-primary" type="submit">
         Start
       </button>
-    </div>
+    </form>
   );
 }
 
 Inputs.propTypes = {
   nameInputValue: PropTypes.string.isRequired,
   dateInputValue: PropTypes.string.isRequired,
-  hoursInputValue: PropTypes.string.isRequired,
-  minutesInputValue: PropTypes.string.isRequired,
+  timeInputValue: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   onStart: PropTypes.func.isRequired,
+  updateDate: PropTypes.func.isRequired,
 };
 
 function mapStateToProps(state) {
   return {
     nameInputValue: state.inputsReducer.nameInputValue,
     dateInputValue: state.inputsReducer.dateInputValue,
-    hoursInputValue: state.inputsReducer.hoursInputValue,
-    minutesInputValue: state.inputsReducer.minutesInputValue,
+    timeInputValue: state.inputsReducer.timeInputValue,
   };
 }
 
@@ -108,6 +113,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(createTimer(data));
       dispatch(clearInput());
     },
+    updateDate: () => dispatch(updateCurrentDate()),
   };
 }
 

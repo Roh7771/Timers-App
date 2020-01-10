@@ -1,8 +1,18 @@
 import { uuid } from 'uuidv4';
-import { CREATETIMER, UPDATECURRENTDATE } from '../actions/actionsTypes';
+import {
+  CREATETIMER,
+  UPDATECURRENTDATE,
+  DELETETIMER,
+} from '../actions/actionsTypes';
 
 const initialState = {
-  timers: [],
+  timers: [
+    {
+      name: 'New Year in',
+      endDate: 1609448400000,
+      id: uuid(),
+    },
+  ],
   currentDate: Date.now(),
 };
 
@@ -25,6 +35,12 @@ export default function(state = initialState, action) {
       return {
         ...state,
         currentDate: Date.now(),
+      };
+
+    case DELETETIMER:
+      return {
+        ...state,
+        timers: state.timers.filter(el => el.id !== action.payload),
       };
 
     default:
